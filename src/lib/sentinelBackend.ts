@@ -2,7 +2,7 @@
  * SentinelAI backend client (FastAPI on Render).
  * Called directly from the browser — backend has permissive CORS.
  */
-export const SENTINEL_API_BASE = "https://sentinel-ai-fhh2.onrender.com";
+export const SENTINEL_API_BASE = (import.meta.env.VITE_SENTINEL_API_BASE as string) || "https://sentinel-ai-fhh2.onrender.com";
 
 export type BackendEnvironment = "production" | "staging" | "development";
 export type BackendChangeType = "db-migration" | "code-deploy" | "config-change" | "rollback";
