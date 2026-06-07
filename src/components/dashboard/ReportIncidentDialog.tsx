@@ -3,6 +3,7 @@ import { X, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   reportIncidentBackend,
+  SENTINEL_API_BASE,
   type BackendSeverity,
   type IncidentReport,
 } from "@/lib/sentinelBackend";
@@ -52,7 +53,22 @@ export function ReportIncidentDialog({ open, onClose, onReported }: Props) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await reportIncidentBackend(form);
+      // Lookup API key for this service
+      let apiKey = "";
+      try {
+        const res = await fetch(`${SENTINEL_API_BASE}/api/v1/projects/`);
+        if (res.ok) {
+          const projects = await res.json() as { name: string; api_key: string }[];
+          const proj = projects.find((p) => p.name === form.service);
+          if (proj) {
+            apiKey = proj.api_key;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to lookup API key for incident report", err);
+      }
+
+      await reportIncidentBackend(form, apiKey);
       toast.success("Incident reported to SentinelAI memory", {
         icon: <CheckCircle2 className="h-4 w-4 text-[oklch(0.78_0.17_155)]" />,
       });

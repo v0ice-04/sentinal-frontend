@@ -3,6 +3,7 @@ import {
   analyzeDeployBackend,
   getMemoriesBackend,
   inferChangeType,
+  SENTINEL_API_BASE,
   type BackendEnvironment,
   type MemoryItem,
   type RiskAnalysis,
@@ -101,6 +102,21 @@ function deriveImprovements(recommendation: string): Improvement[] {
 export async function analyzeDeployment(
   d: DeploymentInputData,
 ): Promise<AnalysisResult> {
+  // Fetch projects to find the matching API Key for this service/project name
+  let apiKey = "";
+  try {
+    const res = await fetch(`${SENTINEL_API_BASE}/api/v1/projects/`);
+    if (res.ok) {
+      const projects = await res.json() as { name: string; api_key: string }[];
+      const proj = projects.find((p) => p.name === d.service);
+      if (proj) {
+        apiKey = proj.api_key;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to lookup API key in analyzeDeployment", err);
+  }
+
   const [risk, memories] = await Promise.all([
     analyzeDeployBackend({
       service: d.service,
@@ -108,7 +124,7 @@ export async function analyzeDeployment(
       change_type: inferChangeType(d.commitMessage),
       timestamp: new Date().toISOString(),
       deployed_by: d.triggeredBy,
-    }),
+    }, apiKey),
     getMemoriesBackend(d.service).catch(() => [] as MemoryItem[]),
   ]);
   const level = levelFromScore(risk.risk_score);

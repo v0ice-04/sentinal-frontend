@@ -67,16 +67,18 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
-export function analyzeDeployBackend(event: DeployEvent): Promise<RiskAnalysis> {
+export function analyzeDeployBackend(event: DeployEvent, apiKey?: string): Promise<RiskAnalysis> {
   return request<RiskAnalysis>("/api/v1/deploy/analyze", {
     method: "POST",
+    headers: apiKey ? { "x-api-key": apiKey } : {},
     body: JSON.stringify(event),
   });
 }
 
-export function reportIncidentBackend(incident: IncidentReport): Promise<unknown> {
+export function reportIncidentBackend(incident: IncidentReport, apiKey?: string): Promise<unknown> {
   return request<unknown>("/api/v1/deploy/incident", {
     method: "POST",
+    headers: apiKey ? { "x-api-key": apiKey } : {},
     body: JSON.stringify(incident),
   });
 }
