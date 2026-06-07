@@ -1,0 +1,215 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Vercel-inspired dark design system.
+ * Colors converted from the Vercel design doc into oklch, with dark mode
+ * as the default (polarity-flipped from the doc's near-white canvas).
+ */
+
+@theme inline {
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius: var(--radius-md);
+
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Vercel signature accents */
+  --color-link: var(--link);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-violet: var(--violet);
+  --color-cyan: var(--cyan);
+  --color-pink: var(--highlight-pink);
+
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-canvas-soft-2: var(--canvas-soft-2);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-ink: var(--ink);
+  --color-body-fg: var(--body-fg);
+  --color-mute: var(--mute);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+/* Default: LIGHT Vercel theme */
+:root {
+  /* Vercel light stack */
+  --canvas: #ffffff;
+  --canvas-soft: #fafafa;
+  --canvas-soft-2: #f5f5f5;
+  --hairline: #ebebeb;
+  --hairline-strong: #a1a1a1;
+  --ink: #171717;
+  --body-fg: #4d4d4d;
+  --mute: #888888;
+
+  --background: var(--canvas-soft);
+  --foreground: var(--ink);
+  --card: var(--canvas);
+  --card-foreground: var(--ink);
+  --popover: var(--canvas);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--canvas-soft);
+  --secondary-foreground: var(--ink);
+  --muted: var(--canvas-soft-2);
+  --muted-foreground: var(--mute);
+  --accent: var(--canvas-soft-2);
+  --accent-foreground: var(--ink);
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: #0070f3;
+
+  /* Vercel accent palette */
+  --link: #0070f3;
+  --success: #0070f3;
+  --warning: #f5a623;
+  --error: #ee0000;
+  --violet: #7928ca;
+  --cyan: #50e3c2;
+  --highlight-pink: #ff0080;
+  --destructive: var(--error);
+  --destructive-foreground: #ffffff;
+
+  --sidebar: var(--canvas);
+  --sidebar-foreground: var(--body-fg);
+  --sidebar-border: var(--hairline);
+  --sidebar-accent: var(--canvas-soft);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-ring: var(--ring);
+
+  --chart-1: var(--link);
+  --chart-2: var(--cyan);
+  --chart-3: var(--highlight-pink);
+  --chart-4: var(--warning);
+  --chart-5: var(--violet);
+}
+
+/* Dark override — html.dark */
+.dark {
+  --canvas: #000000;
+  --canvas-soft: #0a0a0a;
+  --canvas-soft-2: #111111;
+  --hairline: #1a1a1a;
+  --hairline-strong: #333333;
+  --ink: #ededed;
+  --body-fg: #a1a1a1;
+  --mute: #666666;
+
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--canvas-soft);
+  --card-foreground: var(--ink);
+  --popover: var(--canvas-soft);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #000000;
+  --secondary: var(--canvas-soft);
+  --secondary-foreground: var(--ink);
+  --muted: var(--canvas-soft-2);
+  --muted-foreground: var(--mute);
+  --accent: var(--canvas-soft-2);
+  --accent-foreground: var(--ink);
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: #0070f3;
+
+  --link: #3291ff;
+  --success: #3291ff;
+  --warning: #f5a623;
+  --error: #ff4444;
+  --violet: #8a2be2;
+  --cyan: #50e3c2;
+  --highlight-pink: #ff0080;
+  --destructive: var(--error);
+  --destructive-foreground: #ffffff;
+
+  --sidebar: var(--canvas-soft);
+  --sidebar-foreground: var(--body-fg);
+  --sidebar-border: var(--hairline);
+  --sidebar-accent: var(--canvas-soft-2);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: #000000;
+  --sidebar-ring: var(--ring);
+
+  --chart-1: var(--link);
+  --chart-2: var(--cyan);
+  --chart-3: var(--highlight-pink);
+  --chart-4: var(--warning);
+  --chart-5: var(--violet);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-background);
+  }
+}
+
+@utility text-mono {
+  font-family: var(--font-mono);
+}
+
+/* Vercel signature mesh gradient (cyan / blue / magenta / amber) */
+@utility bg-mesh {
+  background-image:
+    radial-gradient(at 20% 20%, oklch(0.65 0.20 254 / 0.35) 0px, transparent 50%),
+    radial-gradient(at 80% 10%, oklch(0.83 0.15 175 / 0.30) 0px, transparent 50%),
+    radial-gradient(at 70% 80%, oklch(0.66 0.30 0 / 0.30) 0px, transparent 50%),
+    radial-gradient(at 10% 90%, oklch(0.78 0.16 70 / 0.25) 0px, transparent 50%);
+}
