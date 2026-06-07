@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Brain, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { getMemoriesBackend, type MemoryItem } from "@/lib/sentinelBackend";
-
-const SERVICES = ["auth-service", "payment-service", "api-gateway", "frontend", "worker"];
+import { useActiveServices } from "@/lib/queries";
 
 function factTypeLabel(t: string) {
   const x = t.toLowerCase();
@@ -22,10 +21,18 @@ function formatDate(iso: string | null) {
 }
 
 export function AgentMemoryPanel() {
+  const services = useActiveServices();
   const [service, setService] = useState<string>("auth-service");
   const [items, setItems] = useState<MemoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync selected service if the active services list changes and doesn't contain current selection
+  useEffect(() => {
+    if (services.length > 0 && !services.includes(service)) {
+      setService(services[0]);
+    }
+  }, [services, service]);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,7 +76,7 @@ export function AgentMemoryPanel() {
             onChange={(e) => setService(e.target.value)}
             className="h-7 text-xs px-2 rounded-sm bg-canvas-soft border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
           >
-            {SERVICES.map((s) => (
+            {services.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>

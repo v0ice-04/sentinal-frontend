@@ -6,10 +6,9 @@ import {
   type BackendSeverity,
   type IncidentReport,
 } from "@/lib/sentinelBackend";
-import { useInvalidateMemories } from "@/lib/queries";
+import { useInvalidateMemories, useActiveServices } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
-const SERVICES = ["auth-service", "payment-service", "api-gateway", "frontend", "worker"];
 const SEVS: BackendSeverity[] = ["low", "medium", "high", "critical"];
 
 const inputCls =
@@ -26,6 +25,7 @@ interface Props {
 
 export function ReportIncidentDialog({ open, onClose, onReported }: Props) {
   const invalidate = useInvalidateMemories();
+  const services = useActiveServices();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState<IncidentReport>({
     service: "auth-service",
@@ -36,6 +36,11 @@ export function ReportIncidentDialog({ open, onClose, onReported }: Props) {
     trigger: "code-deploy",
     downtime_minutes: 15,
   });
+
+  // Make sure selected service is valid in case services list changes, or keep default
+  if (!services.includes(form.service) && services.length > 0) {
+    setForm(f => ({ ...f, service: services[0] }));
+  }
 
   if (!open) return null;
 
@@ -81,7 +86,7 @@ export function ReportIncidentDialog({ open, onClose, onReported }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <Field label="Service">
               <select value={form.service} onChange={(e) => update("service", e.target.value)} className={selectCls}>
-                {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
+                {services.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </Field>
             <Field label="Severity">

@@ -21,8 +21,9 @@ export const Route = createFileRoute("/deployments")({
   component: DeploymentsPage,
 });
 
+import { useActiveServices } from "@/lib/queries";
+
 const STATUS_OPTIONS = ["All", "Success", "Failed", "In Progress"];
-const SERVICE_OPTIONS = ["All", "auth-service", "payment-service", "api-gateway", "frontend", "worker"];
 
 function Select({ value, options, onChange, label }: { value: string; options: string[]; onChange: (v: string) => void; label: string }) {
   return (
@@ -47,6 +48,9 @@ function DeploymentsPage() {
   const [status, setStatus] = useState("All");
   const [service, setService] = useState("All");
   const { openDeploy, extraRows } = useDeploy();
+  const services = useActiveServices();
+
+  const serviceOptions = useMemo(() => ["All", ...services], [services]);
 
   const rows = useMemo(() => {
     return extraRows.filter((d) => {
@@ -84,7 +88,7 @@ function DeploymentsPage() {
           />
         </div>
         <Select label="STATUS" value={status} onChange={setStatus} options={STATUS_OPTIONS} />
-        <Select label="SERVICE" value={service} onChange={setService} options={SERVICE_OPTIONS} />
+        <Select label="SERVICE" value={service} onChange={setService} options={serviceOptions} />
       </div>
 
       {rows.length === 0 ? (

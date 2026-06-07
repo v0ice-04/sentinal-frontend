@@ -10,6 +10,7 @@ import { inferChangeType, type BackendChangeType, type BackendEnvironment } from
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useActiveServices } from "@/lib/queries";
 
 interface Props {
   open: boolean;
@@ -17,7 +18,6 @@ interface Props {
   onConfirm: (input: DeploymentInputData, result: AnalysisResult) => void;
 }
 
-const SERVICES = ["auth-service", "payment-service", "api-gateway", "frontend", "worker"];
 const ENVS: BackendEnvironment[] = ["production", "staging", "development"];
 const CHANGE_TYPES: BackendChangeType[] = ["code-deploy", "db-migration", "config-change", "rollback"];
 
@@ -25,6 +25,7 @@ type Phase = "form" | "loading" | "result";
 
 export function TriggerDeployDialog({ open, onClose, onConfirm }: Props) {
   const { user } = useAuth();
+  const services = useActiveServices();
   const [phase, setPhase] = useState<Phase>("form");
   const [autoType, setAutoType] = useState(true);
   const [form, setForm] = useState<DeploymentInputData & { changeType: BackendChangeType; prUrl: string }>({
@@ -37,6 +38,11 @@ export function TriggerDeployDialog({ open, onClose, onConfirm }: Props) {
     prUrl: "",
   });
   const [result, setResult] = useState<AnalysisResult | null>(null);
+
+  // Synchronize dynamic services to select a valid one initially if auth-service is missing
+  if (services.length > 0 && !services.includes(form.service)) {
+    setForm((f) => ({ ...f, service: services[0] }));
+  }
 
   if (!open) return null;
 
@@ -100,6 +106,7 @@ export function TriggerDeployDialog({ open, onClose, onConfirm }: Props) {
               inferredType={inferredType}
               onSubmit={submit}
               onCancel={close}
+              services={services}
             />
           )}
           {phase === "loading" && <LoadingView />}
@@ -128,6 +135,7 @@ function FormView({
   inferredType,
   onSubmit,
   onCancel,
+  services,
 }: {
   form: DeploymentInputData & { changeType: BackendChangeType; prUrl: string };
   update: <K extends keyof (DeploymentInputData & { changeType: BackendChangeType; prUrl: string })>(
@@ -139,12 +147,13 @@ function FormView({
   inferredType: BackendChangeType;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
+  services: string[];
 }) {
   return (
     <form onSubmit={onSubmit} className="p-5 space-y-4">
       <Field label="Service">
         <select value={form.service} onChange={(e) => update("service", e.target.value)} className={selectCls}>
-          {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
+          {services.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </Field>
       <div className="grid grid-cols-2 gap-3">
